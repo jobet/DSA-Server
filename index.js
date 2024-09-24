@@ -7,12 +7,11 @@ const nodemailer = require("nodemailer")
 require('dotenv').config();
 var fs = require('fs');
 const bcrypt = require('bcrypt');
+require('dotenv').config();
 
 try {
-    var data = fs.readFileSync('my-file.txt', 'utf8');
-    var line = data.split("/n")
-    var email_auth = line[0].substring(0,23)
-    var password_auth = line[0].substring(25,41)    
+    var email_auth = process.env.DSA_EMAIL
+    var password_auth = process.env.DSA_PASS
 } catch(e) {
     console.log('Error:', e.stack);
 }
