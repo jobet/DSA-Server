@@ -19,10 +19,10 @@
     "express": "^4.17.2",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
-    "nodemailer": "^6.7.2",
+    "nodemailer": "^6.9.15",
     "nodemon": "^2.0.15",
     "react-scripts": "^5.0.1",
-    "supabase": "^1.200.3",
+    "resend": "^4.0.0",
     "xhr": "^2.6.0"
   }
 }
