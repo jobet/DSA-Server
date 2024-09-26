@@ -47,21 +47,45 @@ app.post('/api/userpass/check', async (req, res) => {
       .select('userpassword_reg, username_reg, useravatar_url, confirmed')
       .eq('useremail_reg', Reg_email)
       .single();
-    if (error) throw error;
 
-    if (data) {
-      const isMatch = await bcrypt.compare(Reg_password, data.userpassword_reg);
-      res.json({
-        username_reg: data.username_reg,
-        useravatar_url: data.useravatar_url,
-        confirmed: data.confirmed,
-        correct_pass: isMatch
-      });
-    } else {
-      res.json([]);
+    if (error) {
+      if (error.code === 'PGRST116') {
+        // No matching record found (email doesn't exist)
+        return res.json({
+          exists: false,
+          confirmed: false,
+          correct_pass: false,
+          message: 'User not found'
+        });
+      }
+      throw error;
     }
+
+    const isMatch = await bcrypt.compare(Reg_password, data.userpassword_reg);
+
+    const responseObj = {
+      exists: true,
+      username_reg: data.username_reg,
+      useravatar_url: data.useravatar_url,
+      confirmed: data.confirmed,
+      correct_pass: isMatch,
+      message: isMatch ? 'Login successful' : 'Incorrect password'
+    };
+
+    if (!data.confirmed) {
+      responseObj.message = 'Account not confirmed';
+    }
+
+    res.json(responseObj);
+
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error during authentication:', error);
+    res.status(500).json({
+      exists: false,
+      confirmed: false,
+      correct_pass: false,
+      message: 'An error occurred during authentication'
+    });
   }
 });
 
