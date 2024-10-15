@@ -186,7 +186,8 @@ app.get('/api/comment/get', async (req, res) => {
         comment_text,
         date_written,
         user_infos (username_reg, useremail_reg, useravatar_url)
-      `);
+      `)
+      .order('date_written', { ascending: false });
     if (error) throw error;
     res.json(data);
   } catch (error) {
@@ -316,7 +317,8 @@ app.post('/api/reply_get', async (req, res) => {
         reply_content,
         reply_written,
         user_infos (useravatar_url, username_reg)
-      `);
+      `)
+      .order('reply_written', { ascending: true });
     if (error) throw error;
     res.json(data);
   } catch (error) {
@@ -442,7 +444,8 @@ app.get('/api/admin/get_questions', async (req, res) => {
   try {
     const { data, error } = await supabase
       .from('quiz_questions')
-      .select('*');
+      .select('*')
+      .order('question_id', { ascending: true });  // Add this line
     if (error) throw error;
     res.json(data);
   } catch (error) {
